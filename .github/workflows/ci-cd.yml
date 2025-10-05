@@ -20,20 +20,17 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore
-        run: dotnet restore ./FCG.Functions/FCG.Functions.csproj
+        run: dotnet restore ./FCG.Functions.sln
 
       - name: Build
-        run: dotnet build ./FCG.Functions/FCG.Functions.csproj --configuration Release --no-restore
+        run: dotnet build ./FCG.Functions.sln --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test ./FCG.Tests/FCG.Tests.csproj --configuration Release --verbosity normal
+        run: dotnet test ./FCG.Functions.sln --configuration Release --verbosity normal
 
       - name: Publish
-        run: dotnet publish ./FCG.Functions/FCG.Functions.csproj --configuration Release --output ./publish
-        
-      - name: Copy host.json
-        run: cp ./FCG.Functions/host.json ./publish/
-
+        run: dotnet publish ./FCG.Functions.sln --configuration Release --output ./publish
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -58,12 +55,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: Prepare deployment folder
-        run: |
-          mkdir -p ./deploy
-          cp ./FCG.Functions/host.json ./deploy/
-          cp -r ./publish/* ./deploy/
-
       - name: Zip package
         run: zip -r function.zip ./deploy
 
