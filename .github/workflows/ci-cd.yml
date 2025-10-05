@@ -56,7 +56,9 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
       - name: Zip package
-        run: zip -r function.zip ./publish
+        run: |
+          cd publish
+          zip -r ../function.zip .
 
       - name: Deploy to DEV
         run: |
