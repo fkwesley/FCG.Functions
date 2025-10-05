@@ -29,10 +29,8 @@ jobs:
         run: dotnet test ./FCG.Tests/FCG.Tests.csproj --configuration Release --verbosity normal
 
       - name: Publish
-        run: dotnet publish ./FCG.Functions/FCG.Functions.csproj \
-          --configuration Release \
-          --output ./publish
-
+        run: dotnet publish ./FCG.Functions/FCG.Functions.csproj --configuration Release --output ./publish
+        
       - name: Copy host.json
         run: cp ./FCG.Functions/host.json ./publish/
 
