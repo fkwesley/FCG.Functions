@@ -28,4 +28,10 @@
     <None Include=".github\workflows\ci-cd.yml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
