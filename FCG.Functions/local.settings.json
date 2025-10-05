@@ -1,0 +1,10 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "ServiceBusConnection": "Endpoint=sb://servicebus-fcg.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SH63dC+VjqPASsk7C85gJaCqHkyfE4bCO+ASbGFGRmQ=",
+    "PaymentsAPI_Url": "https://aca-fcg-payments.agreeablemushroom-f9b57fb6.canadacentral.azurecontainerapps.io/Payments",
+    "PaymentsAPI_Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBRE1JTiIsInVzZXJfaWQiOiJBRE1JTiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJBUFBMSUNBVElPTiBBRE1JTiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzU5Mzc3ODk5LCJpc3MiOiJGQ0cuVXNlcnMifQ.wbr66WGr2qpuMue8WsKfSVweldYrsSeONM39YeHxEQc"
+  }
+}

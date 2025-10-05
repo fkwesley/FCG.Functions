@@ -16,10 +16,16 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.ServiceBus" Version="5.22.2" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.5" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Functions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".github\workflows\ci-cd.yml" />
   </ItemGroup>
 
 </Project>
