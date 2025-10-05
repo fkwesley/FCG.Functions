@@ -57,9 +57,15 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Prepare deployment folder
+        run: |
+          mkdir -p ./deploy
+          cp ./FCG.Functions/host.json ./deploy/
+          cp -r ./publish/* ./deploy/
 
       - name: Zip package
-        run: zip -r function.zip ./publish
+        run: zip -r function.zip ./deploy
 
       - name: Deploy to DEV
         run: |
