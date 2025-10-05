@@ -1,4 +1,4 @@
-name: CI/CD - FCG.Functions
+name: CI/CD - FCG.Functions v2
 on:
   push:
     branches:

@@ -20,16 +20,16 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore ./FCG.Functions/FCG.Functions.csproj
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build ./FCG.Functions/FCG.Functions.csproj --configuration Release --no-restore
 
       - name: Test
         run: dotnet test --configuration Release --no-build --verbosity normal
 
       - name: Publish
-        run: dotnet publish ./src/FCG.Functions -c Release -o ./publish
+        run: dotnet publish ./FCG.Functions/FCG.Functions.csproj -c Release -o ./publish
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
