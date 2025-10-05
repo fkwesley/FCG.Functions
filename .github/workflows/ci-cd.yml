@@ -45,7 +45,6 @@ jobs:
 
       - name: Deploy to Azure Functions - DEV
         run: |
-          cd FCG.Functions
           func azure functionapp publish func-fcg-payments-dev \
             --csharp \
             --set-env-vars \
@@ -74,7 +73,6 @@ jobs:
 
       - name: Deploy to Azure Functions - UAT
         run: |
-          cd FCG.Functions
           func azure functionapp publish func-fcg-payments-uat \
             --csharp \
             --set-env-vars \
@@ -105,7 +103,6 @@ jobs:
           
       - name: Deploy to Azure Functions - PRD
         run: |
-          cd FCG.Functions
           func azure functionapp publish azure-functions-project-prd \
             --csharp \
             --set-env-vars \

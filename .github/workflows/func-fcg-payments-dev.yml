@@ -1,0 +1,68 @@
+name: Build and deploy .NET Core application to Function App func-fcg-payments-dev
+on:
+  push:
+    branches:
+      - '**'
+
+env:
+  AZURE_FUNCTIONAPP_NAME: func-fcg-payments-dev
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: FCG.Functions/published
+  CONFIGURATION: Release
+  DOTNET_CORE_VERSION: 8.0.x
+  WORKING_DIRECTORY: FCG.Functions
+  DOTNET_CORE_VERSION_INPROC: 6.0.x
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+    
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}"
+    
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: functionapp
+        path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+  
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: functionapp
+        path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set Azure Function App Environment Variables
+      run: |
+        az functionapp config appsettings set --name func-fcg-payments-dev --resource-group RG_FCG --settings \
+          "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
+          "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
+          "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
+          "AspNetCore__Environment=${{ vars.ENV }}"
+
+    - name: Deploy to Azure Function App
+      uses: Azure/functions-action@v1
+      with:
+        app-name: func-fcg-payments-dev
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
