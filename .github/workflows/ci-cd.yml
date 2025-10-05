@@ -1,4 +1,4 @@
-name: CI/CD - FCG.Functions
+﻿name: CI/CD - FCG.Functions
 
 on:
   push:
@@ -6,14 +6,15 @@ on:
       - '**'
 
 jobs:
+  # 🧩 Stage 1 - Build e Teste
   build-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup .NET 8.0
+      - name: Setup .NET 8
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
@@ -24,94 +25,132 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Build and Publish Azure Functions
-        run: |
-          dotnet publish -c Release -o ./published
+      - name: Test
+        run: dotnet test --configuration Release --no-build --verbosity normal
 
-      - name: Unit Tests with Coverage
-        run: dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      - name: Publish
+        run: dotnet publish ./src/FCG.Functions -c Release -o ./publish
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: function-build
+          path: ./publish/
+
+  # 🚀 Stage 2 - Deploy DEV
   deploy-dev:
     needs: build-test
     runs-on: ubuntu-latest
     environment: DEV
 
     steps:
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: function-build
+          path: ./publish
+
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Install Azure Functions Core Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y azure-functions-core-tools-4
+      - name: Zip package
+        run: zip -r function.zip ./publish
 
-      - name: Deploy to Azure Functions - DEV
+      - name: Deploy to DEV
         run: |
-          func azure functionapp publish func-fcg-payments-dev \
-            --csharp \
-            --source-path ./published \
-            --set-env-vars \
+          az functionapp deployment source config-zip \
+            -g RG_FCG \
+            -n func-fcg-payments-dev \
+            --src function.zip
+
+      - name: Set Variables Environment
+        run: |
+          az functionapp config appsettings set \
+            -g RG_FCG \
+            -n func-fcg-payments-dev \
+            --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
                 "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}"
+                "AspNetCore__Environment=DEV"
 
+  # 🚀 Stage 3 - Deploy UAT
   deploy-uat:
-    needs:
-      - build-test
-      - deploy-dev
+    needs: deploy-dev
     runs-on: ubuntu-latest
     environment: UAT
 
     steps:
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: function-build
+          path: ./publish
+
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Install Azure Functions Core Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y azure-functions-core-tools-4
+      - name: Zip package
+        run: zip -r function.zip ./publish
 
-      - name: Deploy to Azure Functions - UAT
+      - name: Deploy to UAT
         run: |
-          func azure functionapp publish func-fcg-payments-uat \
-            --csharp \
-            --set-env-vars \
+          az functionapp deployment source config-zip \
+            -g RG_FCG \
+            -n func-fcg-payments-uat \
+            --src function.zip
+
+      - name: Set Variables Environment
+        run: |
+          az functionapp config appsettings set \
+            -g RG_FCG \
+            -n func-fcg-payments-uat \
+            --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
                 "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}"
+                "AspNetCore__Environment=UAT"
 
+  # 🚀 Stage 4 - Deploy PRD
   deploy-prd:
-    needs: 
-      - build-test
-      - deploy-dev
-      - deploy-uat
+    needs: deploy-uat
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: PRD
+    if: github.ref == 'refs/heads/main'
 
     steps:
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: function-build
+          path: ./publish
+
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Install Azure Functions Core Tools
+      - name: Zip package
+        run: zip -r function.zip ./publish
+
+      - name: Deploy to PRD
         run: |
-          sudo apt-get update
-          sudo apt-get install -y azure-functions-core-tools-4
-          
-      - name: Deploy to Azure Functions - PRD
+          az functionapp deployment source config-zip \
+            -g RG_FCG \
+            -n func-fcg-payments \
+            --src function.zip
+
+      - name: Set Variables Environment
         run: |
-          func azure functionapp publish azure-functions-project-prd \
-            --csharp \
-            --set-env-vars \
+          az functionapp config appsettings set \
+            -g RG_FCG \
+            -n func-fcg-payments \
+            --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
                 "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}"
+                "AspNetCore__Environment=PRD"
