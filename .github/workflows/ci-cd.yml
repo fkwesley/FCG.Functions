@@ -24,6 +24,10 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
+      - name: Build and Publish Azure Functions
+        run: |
+          dotnet publish -c Release -o ./published
+
       - name: Unit Tests with Coverage
         run: dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
 
@@ -47,6 +51,7 @@ jobs:
         run: |
           func azure functionapp publish func-fcg-payments-dev \
             --csharp \
+            --source-path ./published \
             --set-env-vars \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
