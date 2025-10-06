@@ -29,13 +29,17 @@ jobs:
         run: dotnet test ./FCG.Functions.sln --configuration Release --verbosity normal
 
       - name: Publish
-        run: dotnet publish ./FCG.Functions.sln --configuration Release --output ./publish
+        run: |
+          dotnet publish ./FCG.Functions.sln --configuration Release --output ./publish
+          cd publish
+          zip -r ../function.zip .
+          cd ..
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: function-build
-          path: ./publish/
+          name: function-package
+          path: ./function.zip
 
   # 🚀 Stage 2 - Deploy DEV
   deploy-dev:
@@ -44,22 +48,17 @@ jobs:
     environment: DEV
 
     steps:
-      - name: Download build
+      - name: Download package
         uses: actions/download-artifact@v4
         with:
-          name: function-build
-          path: ./publish
+          name: function-package
+          path: .
 
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: Zip package
-        run: |
-          cd publish
-          zip -r ../function.zip .
-
       - name: Deploy to DEV
         run: |
           az functionapp deployment source config-zip \
@@ -83,22 +82,19 @@ jobs:
     needs: deploy-dev
     runs-on: ubuntu-latest
     environment: UAT
-
+    
     steps:
-      - name: Download build
+      - name: Download package
         uses: actions/download-artifact@v4
         with:
-          name: function-build
-          path: ./publish
+          name: function-package
+          path: .
 
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Zip package
-        run: zip -r function.zip ./publish
-
+          
       - name: Deploy to UAT
         run: |
           az functionapp deployment source config-zip \
@@ -123,22 +119,19 @@ jobs:
     runs-on: ubuntu-latest
     environment: PRD
     if: github.ref == 'refs/heads/main'
-
+    
     steps:
-      - name: Download build
+      - name: Download package
         uses: actions/download-artifact@v4
         with:
-          name: function-build
-          path: ./publish
+          name: function-package
+          path: .
 
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Zip package
-        run: zip -r function.zip ./publish
-
+          
       - name: Deploy to PRD
         run: |
           az functionapp deployment source config-zip \
