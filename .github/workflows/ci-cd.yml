@@ -74,8 +74,9 @@ jobs:
             --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
-                "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
-                "AspNetCore__Environment=DEV"
+                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \"
+                "API_Token=${{ secrets.API_TOKEN }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}"
 
   # 🚀 Stage 3 - Deploy UAT
   deploy-uat:
@@ -110,8 +111,9 @@ jobs:
             --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
-                "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
-                "AspNetCore__Environment=UAT"
+                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \"
+                "API_Token=${{ secrets.API_TOKEN }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}"
 
   # 🚀 Stage 4 - Deploy PRD
   deploy-prd:
@@ -147,5 +149,6 @@ jobs:
             --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
-                "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
-                "AspNetCore__Environment=PRD"
+                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \"
+                "API_Token=${{ secrets.API_TOKEN }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}"

@@ -25,10 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Functions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include=".github\workflows\ci-cd.yml" />
   </ItemGroup>
 

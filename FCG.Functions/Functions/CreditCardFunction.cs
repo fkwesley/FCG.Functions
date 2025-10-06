@@ -23,7 +23,7 @@ namespace FCG.Functions.Functions
             _logger = logger;
             _apiClient = apiClient;
             _apiUrl = configuration["PaymentsAPI_Url"];
-            _authToken = configuration["PaymentsAPI_Token"];
+            _authToken = configuration["API_Token"];
         }
 
         [Function(nameof(CreditCardFunction))]

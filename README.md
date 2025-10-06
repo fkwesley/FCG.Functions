@@ -34,7 +34,8 @@ The following environment variables must be configured in the `local.settings.js
 
 - `ServiceBusConnection`: Connection string for the Azure Service Bus.
 - `PaymentsAPI_Url`: URL of the Payments API endpoint.
-- `PaymentsAPI_Token`: Authentication token for the Payments API.
+- `OrdersAPI_Url`: URL of the Orders API endpoint.
+- `API_Token`: Authentication token for the Payments API.
 
 Example `local.settings.json`:
 
@@ -77,7 +78,8 @@ The following environment variables are configured in GitHub Secrets and Variabl
 - `AZURE_CREDENTIALS`: Azure service principal credentials for authentication.
 - `SERVICEBUS_CONNECTION`: Connection string for the Azure Service Bus.
 - `PAYMENTS_API_URL`: URL of the Payments API endpoint.
-- `PAYMENTS_API_TOKEN`: Authentication token for the Payments API.
+- `ORDERS_API_URL`: URL of the Orders API endpoint.
+- `API_TOKEN`: Authentication token for the Payments API.
 - `ENV`: Specifies the environment (e.g., Development, UAT, Production).
 
 ### Manual Trigger

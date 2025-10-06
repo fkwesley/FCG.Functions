@@ -27,7 +27,7 @@ namespace FCG.Tests
             _configurationMock = new Mock<IConfiguration>();
 
             _configurationMock.Setup(c => c["PaymentsAPI_Url"]).Returns("https://example.com/api");
-            _configurationMock.Setup(c => c["PaymentsAPI_Token"]).Returns("test-token");
+            _configurationMock.Setup(c => c["API_Token"]).Returns("test-token");
 
             _function = new CreditCardFunction(_loggerMock.Object, _apiClientMock.Object, _configurationMock.Object);
         }
