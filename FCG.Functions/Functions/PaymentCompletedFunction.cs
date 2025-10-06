@@ -5,34 +5,35 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using FCG.Functions.ApiClient;
 
 namespace FCG.Functions.Functions
 {
-    public class DebitCardFunction // Renamed class
+    public class PaymentCompletedFunction
     {
-        private readonly ILogger<DebitCardFunction> _logger; // Updated logger type
+        private readonly ILogger<PaymentCompletedFunction> _logger;
         private readonly IApiClient _apiClient;
         private readonly string _apiUrl;
         private readonly string _authToken;
 
-        public DebitCardFunction(ILogger<DebitCardFunction> logger, IApiClient apiClient, IConfiguration configuration)
+        public PaymentCompletedFunction(ILogger<PaymentCompletedFunction> logger, IApiClient apiClient, IConfiguration configuration)
         {
             _logger = logger;
             _apiClient = apiClient;
-            _apiUrl = configuration["PaymentsAPI_Url"];
+            _apiUrl = configuration["OrdersAPI_Url"];
             _authToken = configuration["API_Token"];
         }
 
-        [Function(nameof(DebitCardFunction))] // Updated function name
+        [Function(nameof(PaymentCompletedFunction))]
         public async Task Run(
-            [ServiceBusTrigger("fcg.paymentstopic", "FCG.Payments.DebitCard", Connection = "ServiceBusConnection")]
+            [ServiceBusTrigger("fcg.paymentstopic", "FCG.Payments.PaymentCompleted", Connection = "ServiceBusConnection")]
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
-            _logger.LogInformation("Processing message from DebitCard subscription. Message ID: {id}", message.MessageId);
+            _logger.LogInformation("---------------------------------------------------------------------------------------------------------");
+            _logger.LogInformation("Processing message from PaymentCompleted subscription. Message ID: {id}", message.MessageId);
 
             try
             {

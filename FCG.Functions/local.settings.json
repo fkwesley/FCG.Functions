@@ -5,6 +5,7 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "ServiceBusConnection": "Endpoint=sb://servicebus-fcg.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SH63dC+VjqPASsk7C85gJaCqHkyfE4bCO+ASbGFGRmQ=",
     "PaymentsAPI_Url": "https://aca-fcg-payments.agreeablemushroom-f9b57fb6.canadacentral.azurecontainerapps.io/Payments",
-    "PaymentsAPI_Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBRE1JTiIsInVzZXJfaWQiOiJBRE1JTiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJBUFBMSUNBVElPTiBBRE1JTiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzU5Mzc3ODk5LCJpc3MiOiJGQ0cuVXNlcnMifQ.wbr66WGr2qpuMue8WsKfSVweldYrsSeONM39YeHxEQc"
+    "OrdersAPI_Url": "https://aca-fcg-orders.agreeablemushroom-f9b57fb6.canadacentral.azurecontainerapps.io/Orders",
+    "API_Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJGQ0cuVEVDSEFDQ09VTlQiLCJ1c2VyX2lkIjoiRkNHLlRFQ0hBQ0NPVU5UIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRFQ0hOSUNBTCBBQ0NPVU5UIEZJQVAiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoyNTM0MDIzMDA4MDAsImlzcyI6IkZDRy5Vc2VycyJ9.tef7lPL2UGQpj63Ugv84mPgZkWfwe8ErOp6TGjWJ6HE"
   }
 }
