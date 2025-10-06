@@ -74,7 +74,7 @@ jobs:
             --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
-                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \"
+                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \
                 "API_Token=${{ secrets.API_TOKEN }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}"
 
@@ -111,7 +111,7 @@ jobs:
             --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
-                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \"
+                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \
                 "API_Token=${{ secrets.API_TOKEN }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}"
 
@@ -149,6 +149,6 @@ jobs:
             --settings \
                 "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
                 "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
-                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \"
+                "OrdersAPI_Url=${{ vars.ORDERS_API_URL }}" \
                 "API_Token=${{ secrets.API_TOKEN }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}"
