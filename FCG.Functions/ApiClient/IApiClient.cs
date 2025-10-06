@@ -5,6 +5,6 @@ namespace FCG.Functions.ApiClient
 {
     public interface IApiClient
     {
-        Task<HttpResponseMessage> PostAsync(string url, string content, string authToken);
+        Task<HttpResponseMessage> CallApiAsync(HttpMethod httpMethod, string url, string content, string authToken);
     }
 }

@@ -14,15 +14,15 @@ namespace FCG.Functions.ApiClient
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<HttpResponseMessage> PostAsync(string url, string content, string authToken)
+        public async Task<HttpResponseMessage> CallApiAsync(HttpMethod httpMethod, string url, string content, string authToken)
         {
             var client = _httpClientFactory.CreateClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, url)
+            var request = new HttpRequestMessage(httpMethod, url)
             {
-                Content = new StringContent(content, Encoding.UTF8, "application/json")
+                Content = content != null ? new StringContent(content, Encoding.UTF8, "application/json") : null
             };
             request.Headers.Add("Authorization", $"Bearer {authToken}");
-
+            
             return await client.SendAsync(request);
         }
     }
