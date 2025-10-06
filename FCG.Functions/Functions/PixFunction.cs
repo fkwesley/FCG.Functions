@@ -32,11 +32,12 @@ namespace FCG.Functions.Functions
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
+            _logger.LogInformation("---------------------------------------------------------------------------------------------------------");
             _logger.LogInformation("Processing message from Pix subscription. Message ID: {id}", message.MessageId);
 
             try
             {
-                var response = await _apiClient.PostAsync(_apiUrl, message.Body.ToString(), _authToken);
+                var response = await _apiClient.CallApiAsync(HttpMethod.Post, _apiUrl, message.Body.ToString(), _authToken);
 
                 if (response.IsSuccessStatusCode)
                 {

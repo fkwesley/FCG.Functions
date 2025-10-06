@@ -1,8 +1,3 @@
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -32,11 +27,12 @@ namespace FCG.Functions.Functions
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
+            _logger.LogInformation("---------------------------------------------------------------------------------------------------------");
             _logger.LogInformation("Processing message from CreditCard subscription. Message ID: {id}", message.MessageId);
 
             try
             {
-                var response = await _apiClient.PostAsync(_apiUrl, message.Body.ToString(), _authToken);
+                var response = await _apiClient.CallApiAsync(HttpMethod.Post, _apiUrl, message.Body.ToString(), _authToken);
 
                 if (response.IsSuccessStatusCode)
                 {

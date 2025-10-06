@@ -41,7 +41,7 @@ namespace FCG.Tests
             var messageActionsMock = new Mock<ServiceBusMessageActions>();
 
             _apiClientMock
-                .Setup(client => client.PostAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(client => client.CallApiAsync(HttpMethod.Post, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
             // Act
@@ -60,7 +60,7 @@ namespace FCG.Tests
             var messageActionsMock = new Mock<ServiceBusMessageActions>();
 
             _apiClientMock
-                .Setup(client => client.PostAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(client => client.CallApiAsync(HttpMethod.Post, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
 
             // Act
@@ -79,7 +79,7 @@ namespace FCG.Tests
             var messageActionsMock = new Mock<ServiceBusMessageActions>();
 
             _apiClientMock
-                .Setup(client => client.PostAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(client => client.CallApiAsync(HttpMethod.Post, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             // Act

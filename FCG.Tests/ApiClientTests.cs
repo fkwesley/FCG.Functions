@@ -36,7 +36,7 @@ namespace FCG.Tests
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
             // Act
-            var response = await _apiClient.PostAsync(url, content, authToken);
+            var response = await _apiClient.CallApiAsync(HttpMethod.Post, url, content, authToken);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -65,7 +65,7 @@ namespace FCG.Tests
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
 
             // Act
-            var response = await _apiClient.PostAsync(url, content, authToken);
+            var response = await _apiClient.CallApiAsync(HttpMethod.Post, url, content, authToken);
 
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

@@ -28,7 +28,7 @@ namespace FCG.Functions.Functions
 
         [Function(nameof(PaymentCompletedFunction))]
         public async Task Run(
-            [ServiceBusTrigger("fcg.paymentstopic", "FCG.Payments.PaymentCompleted", Connection = "ServiceBusConnection")]
+            [ServiceBusTrigger("fcg.paymentstopic", "FCG.Payments.Completed", Connection = "ServiceBusConnection")]
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
@@ -37,16 +37,32 @@ namespace FCG.Functions.Functions
 
             try
             {
-                var response = await _apiClient.PostAsync(_apiUrl, message.Body.ToString(), _authToken);
+                var orderId = message.ApplicationProperties.ContainsKey("OrderId") ? 
+                                message.ApplicationProperties["OrderId"].ToString() : 
+                                throw new InvalidOperationException("OrderId not received");
+                _logger.LogInformation("Order ID: {orderId}", orderId);
+
+                var paymentStatus = message.ApplicationProperties.ContainsKey("PaymentStatus") ?
+                                        message.ApplicationProperties["PaymentStatus"].ToString() :
+                                        throw new InvalidOperationException("PaymentStatus not received");
+                _logger.LogInformation("PaymentStatus: {paymentStatus}", paymentStatus);
+
+                if (paymentStatus == "Completed")
+                    paymentStatus = "Paid";
+
+                var response = await _apiClient.CallApiAsync(HttpMethod.Put, 
+                                                    $"{_apiUrl}/{orderId}?orderStatus={paymentStatus}", 
+                                                    null, 
+                                                    _authToken);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation("Message successfully posted to API.");
+                    _logger.LogInformation("Message successfully put to API.");
                     await messageActions.CompleteMessageAsync(message);
                 }
                 else
                 {
-                    _logger.LogError("Failed to post message to API. Status Code: {statusCode}", response.StatusCode);
+                    _logger.LogError("Failed to put message to API. Status Code: {statusCode}", response.StatusCode);
                     await messageActions.AbandonMessageAsync(message);
                 }
             }
