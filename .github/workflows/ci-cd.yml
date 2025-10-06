@@ -1,0 +1,151 @@
+﻿name: CI/CD - FCG.Functions
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  # 🧩 Stage 1 - Build e Teste
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore ./FCG.Functions.sln
+
+      - name: Build
+        run: dotnet build ./FCG.Functions.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test ./FCG.Functions.sln --configuration Release --verbosity normal
+
+      - name: Publish
+        run: |
+          dotnet publish ./FCG.Functions.sln --configuration Release --output ./publish
+          cd publish
+          zip -r ../function.zip .
+          cd ..
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: function-package
+          path: ./function.zip
+
+  # 🚀 Stage 2 - Deploy DEV
+  deploy-dev:
+    needs: build-test
+    runs-on: ubuntu-latest
+    environment: DEV
+
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: function-package
+          path: .
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Deploy to DEV
+        run: |
+          az functionapp deployment source config-zip \
+            -g RG_FCG \
+            -n func-fcg-payments-dev \
+            --src function.zip
+
+      - name: Set Variables Environment
+        run: |
+          az functionapp config appsettings set \
+            -g RG_FCG \
+            -n func-fcg-payments-dev \
+            --settings \
+                "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
+                "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
+                "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
+                "AspNetCore__Environment=DEV"
+
+  # 🚀 Stage 3 - Deploy UAT
+  deploy-uat:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment: UAT
+    
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: function-package
+          path: .
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Deploy to UAT
+        run: |
+          az functionapp deployment source config-zip \
+            -g RG_FCG \
+            -n func-fcg-payments-uat \
+            --src function.zip
+
+      - name: Set Variables Environment
+        run: |
+          az functionapp config appsettings set \
+            -g RG_FCG \
+            -n func-fcg-payments-uat \
+            --settings \
+                "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
+                "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
+                "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
+                "AspNetCore__Environment=UAT"
+
+  # 🚀 Stage 4 - Deploy PRD
+  deploy-prd:
+    needs: deploy-uat
+    runs-on: ubuntu-latest
+    environment: PRD
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: function-package
+          path: .
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Deploy to PRD
+        run: |
+          az functionapp deployment source config-zip \
+            -g RG_FCG \
+            -n func-fcg-payments \
+            --src function.zip
+
+      - name: Set Variables Environment
+        run: |
+          az functionapp config appsettings set \
+            -g RG_FCG \
+            -n func-fcg-payments \
+            --settings \
+                "ServiceBusConnection=${{ secrets.SERVICEBUS_CONNECTION }}" \
+                "PaymentsAPI_Url=${{ vars.PAYMENTS_API_URL }}" \
+                "PaymentsAPI_Token=${{ secrets.PAYMENTS_API_TOKEN }}" \
+                "AspNetCore__Environment=PRD"
