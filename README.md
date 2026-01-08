@@ -1,4 +1,4 @@
-# Azure Functions Project
+﻿# 🎮 FCG.Functions
 
 ## Overview
 This project contains three Azure Functions designed to process messages from a Service Bus topic and forward them to an external Payments API. Each function handles a specific type of payment: Credit Card, Debit Card, and Pix.
@@ -7,6 +7,7 @@ This project contains three Azure Functions designed to process messages from a 
 1. **CreditCardFunction**: Processes messages from the `FCG.Payments.CreditCard` subscription.
 2. **DebitCardFunction**: Processes messages from the `FCG.Payments.DebitCard` subscription.
 3. **PixFunction**: Processes messages from the `FCG.Payments.Pix` subscription.
+4. **PaymentCompletedFunction**: Processes messages from the `FCG.Payments.Completed` subscription.
 
 All functions use the `IApiClient` to send data to the Payments API.
 
@@ -17,7 +18,25 @@ Unit tests have been implemented for all three functions:
 - **PixFunctionTests**: Similar to `CreditCardFunctionTests`, but for the `PixFunction`.
 
 ## Folder Structure
-
+```bash
+FCG.Functions/
+│
+├── ApiClient                      # Contains the implementation and interface for the API client
+│   ├── IApiClient.cs              # Interface for the API client
+│   └── ApiClient.cs               # Implementation of the API client
+├── Functions                      # Houses the Azure Functions
+│   ├── CreditCardFunction/        # Handles credit card payments
+│   ├── DebitCardFunction/         # Handles debit card payments
+│   └── PixFunction/               # Handles Pix payments
+├── Tests                          # Contains unit tests for the functions and the ApiClient
+│   ├── CreditCardFunctionTests/   # Unit tests for CreditCardFunction
+│   ├── DebitCardFunctionTests/    # Unit tests for DebitCardFunction
+│   └── PixFunctionTests/          # Unit tests for PixFunction
+├── local.settings.json            # Local settings for development
+├── host.json                      # Host configuration for Azure Functions
+├── Program.cs                     # Main entry point for the application
+└── README.md                      # Project documentation
+```
 ### Explanation of Folders and Files
 - **ApiClient**: Contains the implementation and interface for the API client used to communicate with the Payments API.
 - **Functions**: Houses the Azure Functions, each responsible for processing a specific type of payment.
@@ -26,6 +45,7 @@ Unit tests have been implemented for all three functions:
 - **host.json**: Configures runtime settings for Azure Functions, such as concurrency limits.
 - **Program.cs**: The main entry point for the application, where dependencies are registered and the application is configured.
 - **README.md**: Provides documentation for the project.
+```
 
 ## Configuration
 
